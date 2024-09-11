@@ -17,7 +17,7 @@ $fs = 0.1;
 tolerance = 0.2;
 
 // Switch card width
-sw_card_w = 21;
+sw_card_w = 21.5;
 // Switch card width notch
 sw_card_w_notch = 20.5;
 // Switch card height
@@ -30,15 +30,15 @@ sw_card_b_r = 1;
 // Switch joycon rail height
 sw_jc_r_height = 85.4;
 // Switch joycon rail width
-sw_jc_r_width = 9.5;
+sw_jc_r_width = 11;
 // Switch joycon rail thickness
-sw_jc_r_thick = 1.6;
+sw_jc_r_thick = 2.2;
 // Switch joycon rail inside height
 sw_jc_r_in_height = 80;
 // Switch joycon rail inside width
 sw_jc_r_in_width = 7.5;
 // Switch joycon rail inside thickness
-sw_jc_r_in_thick = 1.2;
+sw_jc_r_in_thick = 1;
 // Switch joycon rail inside notch offset
 sw_jc_r_in_notch_off = 4.2;
 // Switch joycon rail inside notch width
@@ -122,10 +122,12 @@ module switch_joycon_rail_test(t) {
 	_switch_joycon_rail_test(t, extra);
 	right(extra) up(extra) switch_joycon_rail_right(t);
     }
+/*
     right(sw_jc_r_width + 4 * extra) difference() {
 	_switch_joycon_rail_test(t, extra);
 	right(extra) up(extra) switch_joycon_rail_left(t);	
     }
+*/
 }
 
 //switch_game_card_test(tolerance);
