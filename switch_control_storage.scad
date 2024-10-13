@@ -48,7 +48,7 @@ sw_jc_r_in_notch_w = 2.2;
 sw_depth = 101;
 
 // Place the sd cards along with the joycons instead of sideways
-drawer_long = false;
+drawer_long = true;
 // Number of drawers
 drawers = 2;
 // Drawer thickness
@@ -109,25 +109,55 @@ module switch_joycon_rail_block(t, extra_w, extra_h, extra_d) {
     }
 }
 
-module drawer(t, drawer_spacing, walls) {
+module switch_game_card_slot(t) {
+	union() {
+	    switch_game_card(t);
+	    right(0.1 * sw_card_w) back(0.1 * sw_card_d) down(sw_card_thick) scale([0.8, 0.8, 1]) #switch_game_card(t);
+	}
+}
+
+module _drawer(t, walls) {
     // We could probably make this configurable someday
     if (drawer_long) {
-	slots = 4;
-	width = sw_card_w + 2 * walls;
-	depth = slots * (sd_card_d + walls) + walls;
-	slot_depth = sw_card_d;
-    } else {
 	slots = 3;
-	width = sw_card_d + 2 * walls;
-	depth = slots * (sd_card_w + walls) + walls;
-	slot_depth = sw_card_w;
-    }
-    for (i = [0:1:slots]) {
+	width = sw_card_w + 2 * walls;
+	depth = slots * (sw_card_d + walls) + walls;
+	slot_depth = sw_card_d;
 	difference() {
 	    cube([width, depth, drawer_thickness]);
-	    back(i * slot_depth + (i * walls) + walls) switch_game_card(tolerance);
-	    
+	    for (i = [0:1:slots-1]) {
+		up(walls) right(walls) back(i * slot_depth + (i * walls) + walls) #switch_game_card_slot(t);
+	    }
 	}
+    } else {
+	slots = 4;
+	width = sw_card_d + 2 * walls;
+	depth = slots * (sw_card_w + walls) + walls;
+	slot_depth = sw_card_w;
+	difference() {
+	    cube([width, depth, drawer_thickness]);
+	    for (i = [0:1:slots-1]) {
+		up(walls) right(sw_card_d + walls) back(i * slot_depth + (i * walls) + walls) rotate([0, 0, 90]) #switch_game_card_slot(t);
+	    }
+	}
+    }
+}
+
+module drawer_puller(t, width, depth, height) {
+    union() {
+	cube([width, depth / 4, height * 2]);
+	cube([width, depth, height]);
+    }
+}
+
+module drawer(t, walls) {
+    puller_depth = 2 * walls;
+    puller_height = walls;
+    puller_width = 4 * walls;
+    puller_offset = ((drawer_long? sw_card_w:sw_card_d) + 2 * walls) / 2 - puller_width / 2;
+    union() {
+	back(puller_depth) _drawer(t, walls);
+	right(puller_offset) drawer_puller(t, puller_width, puller_depth, puller_height);
     }
 }
 
@@ -156,11 +186,12 @@ module body(t, drawer_spacing) {
     }
 }
 
-switch_game_card(tolerance);
+//switch_game_card(tolerance);
 //switch_game_card_test(tolerance);
+//switch_game_card_slot(tolerance);
 //up(sw_jc_r_width) back(sw_jc_r_depth) rotate([0, 90, 180]) switch_joycon_rail_left(tolerance);
 //switch_joycon_rail_block(tolerance, 2, 2, 2);
 //right(100) mirror([1, 0, 0])switch_joycon_rail_block(tolerance, 2, 2, 2);
 drawer_spacing = 1;
-//body(tolerance, drawer_spacing);
-//right(100) drawer(tolerance, drawer_spacing, walls);
+body(tolerance, drawer_spacing);
+right(-50) drawer(tolerance, 2);
