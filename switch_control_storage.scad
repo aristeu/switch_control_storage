@@ -164,15 +164,15 @@ module drawer(t, walls) {
 module body(t, drawer_spacing) {
     walls = 2;
     drawer_width = (drawer_long? sw_card_w:sw_card_d) + 2 * walls;
-    rail_width = sw_jc_r_thick + sw_jc_r_in_thick;
     body_width = walls * 2 + drawer_spacing * 2 + t * 2 + drawer_width;
     body_height = sw_jc_r_width + walls * 2;
     body_depth = sw_depth;
     drawer_h_offset = (body_height - (2 * walls + drawer_spacing + t)) / 2;
     drawer_w_offset = (body_width - (walls + drawer_spacing + t)) / 2;
     rail_depth_extra = (body_depth - (sw_jc_r_depth + 2 * walls)) / 2 + walls;
+    rail_width = sw_jc_r_thick + sw_jc_r_in_thick + walls;
 
-    union() {
+    difference() {
 	union() {
 	    right(rail_width) difference() {
 		cube([body_width, body_depth, body_height]);
@@ -180,9 +180,14 @@ module body(t, drawer_spacing) {
 	    }
 	    /* Left side rail */
 	    right(rail_width) rotate([0, 270, 0]) switch_joycon_rail_block(t, walls, walls, rail_depth_extra);
+	
+	    /* Right side rail */
+	    right(body_width + rail_width) rotate([0, 90, 0]) mirror([1,0,0]) switch_joycon_rail_block(t, walls, walls, rail_depth_extra);
 	}
-	/* Right side rail */
-	right(body_width + rail_width) rotate([0, 90, 0]) mirror([1,0,0]) switch_joycon_rail_block(t, walls, walls, rail_depth_extra);
+	fillet_mask(l = body_width + 2 * rail_width, r = 1, orient = ORIENT_X, align=V_RIGHT);
+	up(body_height) fillet_mask(l = body_width + 2 * rail_width, r = 1, orient = ORIENT_X, align=V_RIGHT);
+	back(body_depth) fillet_mask(l = body_width + 2 * rail_width, r = 1, orient = ORIENT_X, align=V_RIGHT);
+	back(body_depth) up(body_height) fillet_mask(l = body_width + 2 * rail_width, r = 1, orient = ORIENT_X, align=V_RIGHT);
     }
 }
 
