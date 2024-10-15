@@ -209,7 +209,7 @@ module logo_object(w, d, h) {
 module body(t) {
     drawer_spacing = 2 * tolerance;
     drawer_width = (drawer_long? sw_card_w:sw_card_d) + 2 * walls;
-    body_width = walls * 2 + drawer_spacing * 2 + t * 2 + drawer_width;
+    body_width = drawer_spacing * 2 + t * 2 + drawer_width;
     body_height = sw_jc_r_width + walls * 2 + 2 * drawer_spacing;
     body_depth = sw_depth;
     drawer_height_total = drawer_thickness + drawer_spacing;
@@ -225,7 +225,7 @@ module body(t) {
 	    right(rail_width) difference() {
 		cube([body_width, body_depth, body_height]);
 		/* Drawer hole */
-		up(drawer_h_offset) right(walls) cube([drawer_width_total, sw_depth, drawer_thickness_total]);
+		up(drawer_h_offset) cube([drawer_width_total, sw_depth, drawer_thickness_total]);
 	    }
 	    /* Left side rail */
 	    right(rail_width) rotate([0, 270, 0]) switch_joycon_rail_block(t, walls + drawer_spacing, walls, rail_depth_extra, walls);
