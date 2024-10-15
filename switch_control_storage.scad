@@ -23,7 +23,11 @@ logo_first_line_logo = true; // [true,false]
 // Which logo to use
 logo="switch_logo.svg"; // ["switch_logo.svg":"Switch"]
 // Number of lines (first one might be the logo)
-logo_lines = 2; // [0:3]
+logo_nlines = 1; // [0:3]
+// Text lines
+logo_line = ["Nintendo", "Switch", "Something"];
+// Font Size
+font_size = 6;
 
 module __Customizer_Limit__() {}
 // Minimum angle
@@ -104,7 +108,7 @@ module switch_joycon_notch(t) {
     up(sw_jc_r_thick) back(sw_jc_r_in_notch_off - t) cube([diff/2, sw_jc_r_in_notch_w + t * 2, sw_jc_r_in_thick + t]);
  }
 
-/* This is used to carve a path before the proper rail with notch starts */
+/* This is used to carve a path before the proper rail with notch startlogo_liness */
 module switch_joycon_rail_bare(t) {
     union() {
 	cube([sw_jc_r_width + t, sw_jc_r_depth + t, sw_jc_r_thick + t]);
@@ -181,15 +185,23 @@ module drawer(t, walls) {
     }
 }
 
-module logo(w, d, h) {
-    if (logo_lines > 0) {
-	if (logo_first_line_logo) {
-		logo_lines = logo_lines - 1;
-		linear_extrude(walls * 2, center=true) {
-		    import("/tmp/switch_logo.svg", center = true);
-		}
-	} else {
-    
+module logo_object(w, d, h) {
+    lines = logo_nlines;
+    right(w / 2) back(d / 2) up(h - walls)
+    if (logo_first_line_logo) {
+	lines = lines - 1;
+	union() {
+	    linear_extrude(walls * 2, center=true) {
+		import(logo, center = true);
+	    }
+	    back(-20)
+	    for (i = [0:1:lines - 1]) {
+		back(-(i * 10)) linear_extrude(walls * 2) text(logo_line[i], size = font_size, halign = "center");
+	    }
+	}
+    } else {
+	for (i = [0:1:lines - 1]) {
+	    back(-(i * 10)) linear_extrude(walls * 2) text(logo_line[i], size = font_size, halign = "center");
 	}
     }
 }
@@ -225,7 +237,7 @@ module body(t) {
 	up(body_height) fillet_mask(l = body_width + 2 * rail_width, r = chamfer_radius, orient = ORIENT_X, align=V_RIGHT);
 	back(body_depth) fillet_mask(l = body_width + 2 * rail_width, r = chamfer_radius, orient = ORIENT_X, align=V_RIGHT);
 	back(body_depth) up(body_height) fillet_mask(l = body_width + 2 * rail_width, r = chamfer_radius, orient = ORIENT_X, align=V_RIGHT);
-	logo(body_width + rail_width * 2, body_depth, body_height);
+	logo_object(body_width + rail_width * 2, body_depth, body_height);
     }
 }
 
@@ -235,6 +247,5 @@ module body(t) {
 //up(sw_jc_r_width) back(sw_jc_r_depth) rotate([0, 90, 180]) switch_joycon_rail_left(tolerance);
 //switch_joycon_rail_block(tolerance, 2, 2, 2, 2);
 //right(100) mirror([1, 0, 0])switch_joycon_rail_block(tolerance, 2, 2, 2, walls);
-
 body(tolerance);
 right(-50) drawer(tolerance, 2);
