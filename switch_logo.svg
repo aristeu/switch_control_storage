@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="18.518173mm"
+   height="18.518677mm"
+   viewBox="0 0 18.518173 18.518677"
+   version="1.1"
+   id="svg221"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview223"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false" />
+  <defs
+     id="defs218" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-90.801279,-47.133063)">
+    <path
+       id="use8974"
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.477929;stroke-linecap:round"
+       d="m 102.93295,60.1088 a 1.73604,1.73604 0 0 1 1.73604,-1.736037 1.73604,1.73604 0 0 1 1.73604,1.736037 1.73604,1.73604 0 0 1 -1.73604,1.736044 1.73604,1.73604 0 0 1 -1.73604,-1.736044 z m 1.60265,5.542753 c 2.65019,0 4.78386,-2.133657 4.78386,-4.783857 v -8.949708 c 0,-2.650197 -2.13367,-4.783857 -4.78386,-4.783857 h -0.15072 -4.03426 v 18.517422 h 4.03426 z m 0,-1.519128 h -0.15072 -2.51514 V 48.653252 h 2.51514 0.15072 c 1.83476,0 3.26473,1.429964 3.26473,3.264736 v 8.949708 c 0,1.834762 -1.42997,3.264729 -3.26473,3.264729 z m -7.972043,1.519128 c 0.01044,0 0.02064,-0.0011 0.03115,-0.0011 H 98.50937 V 47.133066 h -2.464103 v 7.05e-4 h -0.460125 c -2.650201,0 -4.78386,2.133664 -4.78386,4.783857 v 8.950258 c 0,2.650201 2.133659,4.783857 4.78386,4.783857 z m -1.708125,-8.3277 a 1.851776,1.851776 0 0 1 -1.851657,-1.85166 1.851776,1.851776 0 0 1 1.851657,-1.85166 1.851776,1.851776 0 0 1 1.851667,1.85166 1.851776,1.851776 0 0 1 -1.851667,1.85166 z"
+       inkscape:tile-x0="-192.41016"
+       inkscape:tile-y0="124.54981" />
+  </g>
+</svg>
