@@ -12,7 +12,7 @@ tolerance = 0.2;
 
 // Place the sd cards along with the joycons instead of sideways
 drawer_long = false; // [true,false]
-// Number of drawers: only one supported for now
+// Number of drawers
 drawers = 1; // [1:4]
 // Wall thickness
 walls = 2;
