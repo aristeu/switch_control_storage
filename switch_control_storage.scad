@@ -78,16 +78,10 @@ module switch_game_card_fillet(l, r, t) {
 
 module switch_game_card(t) {
     difference() {
-	difference() {
-	    difference() {
-		difference() {
-		    cube([sw_card_w + t, sw_card_d + t, sw_card_thick + t]);
-		    switch_game_card_fillet(sw_card_thick, sw_card_b_r, t);
-		}
-		right(sw_card_w + t) switch_game_card_fillet(sw_card_thick, sw_card_b_r, t);
-	    }
-	    back(sw_card_d + t) switch_game_card_fillet(sw_card_thick, sw_card_b_r, t);
-	}
+	cube([sw_card_w + t, sw_card_d + t, sw_card_thick + t]);
+	switch_game_card_fillet(sw_card_thick, sw_card_b_r, t);
+	right(sw_card_w + t) switch_game_card_fillet(sw_card_thick, sw_card_b_r, t);
+	back(sw_card_d + t) switch_game_card_fillet(sw_card_thick, sw_card_b_r, t);
 	back(sw_card_d + t) right(sw_card_w + t) switch_game_card_fillet(sw_card_thick, sw_card_b_r, t);
     }
 }
@@ -96,10 +90,8 @@ module switch_game_card(t) {
 module switch_game_card_test(t) {
     extra = 2;
     difference() {
-	difference() {
-	    cube([sw_card_w + extra, sw_card_d + extra, sw_card_thick + extra]);
-	    right(extra / 2) back(extra / 2) switch_game_card(tolerance);
-	}
+	cube([sw_card_w + extra, sw_card_d + extra, sw_card_thick + extra]);
+	right(extra / 2) back(extra / 2) switch_game_card(tolerance);
 	up(sw_card_thick) right(extra) back(extra) cube([sw_card_w - extra, sw_card_d - extra, sw_card_thick + extra]);
     }
 }
