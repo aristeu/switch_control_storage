@@ -64,6 +64,8 @@ sw_jc_r_in_notch_off = 4.2;
 sw_jc_r_in_notch_w = 2.2;
 // Switch joycon offset from end of rail until the end of the joycon
 sw_jc_r_depth_offset = 7;
+// Total switch joycon thickness
+sw_jc_r_total_thick = sw_jc_r_thick + sw_jc_r_in_thick;
 
 // Switch body depth
 sw_depth = 101;
@@ -112,7 +114,7 @@ module switch_joycon_notch(t) {
 module switch_joycon_rail_bare(t) {
     union() {
 	cube([sw_jc_r_width + t, sw_jc_r_depth + t, sw_jc_r_thick + t]);
-	/* Notice the inner rail has the seame length here, this is on purpose */
+	/* Notice the inner rail has the same length here, this is on purpose */
 	up(sw_jc_r_thick) right((sw_jc_r_width - sw_jc_r_in_width) / 2) cube([sw_jc_r_in_width + t, sw_jc_r_depth + t, sw_jc_r_in_thick + t]);	
     }
 }
@@ -209,7 +211,8 @@ module logo_object(w, d, h) {
 module body(t) {
     drawer_spacing = 2 * tolerance;
     drawer_width = (drawer_long? sw_card_w:sw_card_d) + 2 * walls;
-    body_width = drawer_spacing * 2 + t * 2 + drawer_width;
+    /* we must account for the space for the drawer, side walls and the joycon rail that will be carved */
+    body_width = drawer_spacing * 2 + t * 2 + drawer_width + 2 * walls + 2 * sw_jc_r_total_thick;
     body_height = sw_jc_r_width + walls * 2 + 2 * drawer_spacing;
     body_depth = sw_depth;
     drawer_height_total = drawer_thickness + drawer_spacing;
@@ -222,21 +225,27 @@ module body(t) {
 
     difference() {
 	union() {
-	    right(rail_width) difference() {
+	    difference() {
 		cube([body_width, body_depth, body_height]);
 		/* Drawer hole */
-		up(drawer_h_offset) cube([drawer_width_total, sw_depth, drawer_thickness_total]);
+		right(sw_jc_r_total_thick + walls) up(drawer_h_offset) cube([drawer_width_total, sw_depth, drawer_thickness_total]);
 	    }
-	    /* Left side rail */
-	    right(rail_width) rotate([0, 270, 0]) switch_joycon_rail_block(t, walls + drawer_spacing, walls, rail_depth_extra, walls);
-	
-	    /* Right side rail */
-	    right(body_width + rail_width) rotate([0, 90, 0]) mirror([1,0,0]) switch_joycon_rail_block(t, walls + drawer_spacing, walls, rail_depth_extra, walls);
 	}
+	/* Left side rail */
+	up(walls) right(sw_jc_r_total_thick) back(sw_jc_r_depth_offset) rotate([0, 270, 0]) #switch_joycon_rail(t);
+	up(walls) back(-(sw_jc_r_depth - sw_jc_r_depth_offset)) right(sw_jc_r_total_thick) rotate([0, 270, 0]) #switch_joycon_rail_bare(t);
+
+	/* Right side rail */
+	up(walls) right(body_width - sw_jc_r_total_thick) back(sw_jc_r_depth_offset) rotate([0, 90, 0]) mirror([1,0,0]) #switch_joycon_rail(t);
+	up(walls) back(-(sw_jc_r_depth - sw_jc_r_depth_offset)) right(body_width - sw_jc_r_total_thick) rotate([0, 90, 0]) mirror([1,0,0]) #switch_joycon_rail_bare(t);
+
+	/* Chamfer */
 	fillet_mask(l = body_width + 2 * rail_width, r = chamfer_radius, orient = ORIENT_X, align=V_RIGHT);
 	up(body_height) fillet_mask(l = body_width + 2 * rail_width, r = chamfer_radius, orient = ORIENT_X, align=V_RIGHT);
 	back(body_depth) fillet_mask(l = body_width + 2 * rail_width, r = chamfer_radius, orient = ORIENT_X, align=V_RIGHT);
 	back(body_depth) up(body_height) fillet_mask(l = body_width + 2 * rail_width, r = chamfer_radius, orient = ORIENT_X, align=V_RIGHT);
+
+	/* Body logo */
 	logo_object(body_width + rail_width * 2, body_depth, body_height);
     }
 }
