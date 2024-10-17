@@ -181,7 +181,7 @@ module drawer(t, walls) {
 
 module logo_object(w, d, h) {
     lines = logo_nlines;
-    right(w / 2) back(d / 2) up(h - walls)
+    right(w / 2) back(d / 2) up(h - walls/2)
     rotate([0, 0, 180])
     if (logo_first_line_logo) {
 	lines = lines - 1;
