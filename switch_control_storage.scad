@@ -13,7 +13,7 @@ tolerance = 0.2;
 // Place the sd cards along with the joycons instead of sideways
 drawer_long = false; // [true,false]
 // Number of drawers: only one supported for now
-drawers = 1; // [1:1]
+drawers = 1; // [1:4]
 // Wall thickness
 walls = 2;
 // Chamfer radius
@@ -211,33 +211,41 @@ module logo_object(w, d, h) {
 module body(t) {
     drawer_spacing = 2 * tolerance;
     drawer_width = (drawer_long? sw_card_w:sw_card_d) + 2 * walls;
+    drawer_thickness_total = drawer_thickness + drawer_spacing;
     /* we must account for the space for the drawer, side walls and the joycon rail that will be carved */
     body_width = drawer_spacing * 2 + t * 2 + drawer_width + 2 * walls + 2 * sw_jc_r_total_thick;
-    body_height = sw_jc_r_width + walls * 2 + 2 * drawer_spacing;
+    rail_and_walls = sw_jc_r_width + 2 * walls + 2 * drawer_spacing + ((drawers > 1)? chamfer_radius:0);
+    drawers_height = drawers * (drawer_thickness_total + walls) + walls + drawer_spacing + ((drawers > 1)? chamfer_radius:0);
+    body_height = (rail_and_walls > drawers_height)? rail_and_walls:drawers_height;
     body_depth = sw_depth;
     drawer_height_total = drawer_thickness + drawer_spacing;
     drawer_width_total = drawer_width + drawer_spacing;
-    drawer_thickness_total = drawer_thickness + drawer_spacing;
-    drawer_h_offset = (body_height - drawer_height_total) / 2;
+
     drawer_w_offset = (body_width - drawer_width_total) / 2;
     rail_depth_extra = (body_depth - (sw_jc_r_depth + 2 * walls)) / 2 + walls;
     rail_width = sw_jc_r_thick + sw_jc_r_in_thick + walls;
 
     difference() {
-	union() {
-	    difference() {
-		cube([body_width, body_depth, body_height]);
-		/* Drawer hole */
-		right(sw_jc_r_total_thick + walls) up(drawer_h_offset) cube([drawer_width_total, sw_depth, drawer_thickness_total]);
+	cube([body_width, body_depth, body_height]);
+	/* Drawer hole */
+	for (i = [0:1:drawers-1]) {
+	    if (drawers > 1) {
+		h_offset = walls + drawer_spacing + ((drawers > 1)? chamfer_radius/2:0) + i * (drawer_thickness_total + walls);
+		right(sw_jc_r_total_thick + walls) up(h_offset) #cube([drawer_width_total, sw_depth, drawer_thickness_total]);
+	    } else {
+		h_offset = (body_height - drawer_thickness_total) / 2;
+		right(sw_jc_r_total_thick + walls) up(h_offset) #cube([drawer_width_total, sw_depth, drawer_thickness_total]);
 	    }
 	}
+
+	rail_h_offset = body_height - walls - sw_jc_r_width;
 	/* Left side rail */
-	up(walls) right(sw_jc_r_total_thick) back(sw_jc_r_depth_offset) rotate([0, 270, 0]) #switch_joycon_rail(t);
-	up(walls) back(-(sw_jc_r_depth - sw_jc_r_depth_offset)) right(sw_jc_r_total_thick) rotate([0, 270, 0]) #switch_joycon_rail_bare(t);
+	up(rail_h_offset) right(sw_jc_r_total_thick) back(sw_jc_r_depth_offset) rotate([0, 270, 0]) #switch_joycon_rail(t);
+	up(rail_h_offset) back(-(sw_jc_r_depth - sw_jc_r_depth_offset)) right(sw_jc_r_total_thick) rotate([0, 270, 0]) #switch_joycon_rail_bare(t);
 
 	/* Right side rail */
-	up(walls) right(body_width - sw_jc_r_total_thick) back(sw_jc_r_depth_offset) rotate([0, 90, 0]) mirror([1,0,0]) #switch_joycon_rail(t);
-	up(walls) back(-(sw_jc_r_depth - sw_jc_r_depth_offset)) right(body_width - sw_jc_r_total_thick) rotate([0, 90, 0]) mirror([1,0,0]) #switch_joycon_rail_bare(t);
+	up(rail_h_offset) right(body_width - sw_jc_r_total_thick) back(sw_jc_r_depth_offset) rotate([0, 90, 0]) mirror([1,0,0]) #switch_joycon_rail(t);
+	up(rail_h_offset) back(-(sw_jc_r_depth - sw_jc_r_depth_offset)) right(body_width - sw_jc_r_total_thick) rotate([0, 90, 0]) mirror([1,0,0]) #switch_joycon_rail_bare(t);
 
 	/* Chamfer */
 	fillet_mask(l = body_width + 2 * rail_width, r = chamfer_radius, orient = ORIENT_X, align=V_RIGHT);
@@ -246,7 +254,7 @@ module body(t) {
 	back(body_depth) up(body_height) fillet_mask(l = body_width + 2 * rail_width, r = chamfer_radius, orient = ORIENT_X, align=V_RIGHT);
 
 	/* Body logo */
-	logo_object(body_width + rail_width * 2, body_depth, body_height);
+	logo_object(body_width, body_depth, body_height);
     }
 }
 
