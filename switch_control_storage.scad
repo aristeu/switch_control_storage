@@ -187,7 +187,7 @@ module logo_object(w, d, h) {
 	lines = lines - 1;
 	union() {
 	    linear_extrude(walls * 2) {
-		import(logo, center = true);
+		rotate([0, 0, 180])import(logo, center = true);
 	    }
 	    back(-20)
 	    for (i = [0:1:lines - 1]) {
