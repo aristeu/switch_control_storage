@@ -28,6 +28,8 @@ logo_nlines = 1; // [0:3]
 logo_line = ["Nintendo", "Switch", "Something"];
 // Font Size
 font_size = 6;
+// Logo scaling
+logo_scaling = 1; // [1:"100%", 1.25:"125%", 1.5:"150%", 2:"200%"]
 
 module __Customizer_Limit__() {}
 // Minimum angle
@@ -200,9 +202,9 @@ module logo_object(w, d, h) {
 	lines = lines - 1;
 	union() {
 	    linear_extrude(walls * 2) {
-		rotate([0, 0, 180])import(logo, center = true);
+		rotate([0, 0, 180])scale([logo_scaling, logo_scaling, 0]) import(logo, center = true);
 	    }
-	    back(-20)
+	    back(-10 - (logo_scaling * 20 * 0.5))
 	    for (i = [0:1:lines - 1]) {
 		back(-(i * 10)) linear_extrude(walls * 2) text(logo_line[i], size = font_size, halign = "center");
 	    }
