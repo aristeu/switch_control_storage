@@ -134,28 +134,37 @@ module switch_game_card_slot(t) {
 	}
 }
 
+/* not pretty but we need to do this here because it's used twice */
+function calc_drawer_depth(drawer_long, slots, d) = slots * (d + walls) + walls;
+function drawer_depth(drawer_long, slots, d) = 
+    let(_depth = calc_drawer_depth(drawer_long, slots, d))
+    (_depth < sw_depth)? sw_depth:_depth;
+function drawer_depth_offset(drawer_long, slots, d) = let(_depth = calc_drawer_depth(drawer_long, slots, d)) (_depth < sw_depth)? (sw_depth - _depth)/2:0;
+
 module _drawer(t, walls) {
     // We could probably make this configurable someday
     if (drawer_long) {
 	slots = 3;
 	width = sw_card_w + 2 * walls;
-	depth = slots * (sw_card_d + walls) + walls;
+	depth = drawer_depth(drawer_long, slots, sw_card_d);
+	extra_depth = drawer_depth_offset(drawer_long, slots, sw_card_d);
 	slot_depth = sw_card_d;
 	difference() {
 	    cube([width, depth, drawer_thickness]);
 	    for (i = [0:1:slots-1]) {
-		up(walls) right(walls) back(i * slot_depth + (i * walls) + walls) #switch_game_card_slot(t);
+		up(walls) right(walls) back(i * slot_depth + (i * walls) + walls + extra_depth) #switch_game_card_slot(t);
 	    }
 	}
     } else {
 	slots = 4;
 	width = sw_card_d + 2 * walls;
-	depth = slots * (sw_card_w + walls) + walls;
+	depth = drawer_depth(drawer_long, slots, sw_card_w);
+	extra_depth = drawer_depth_offset(drawer_long, slots, sw_card_w);
 	slot_depth = sw_card_w;
 	difference() {
 	    cube([width, depth, drawer_thickness]);
 	    for (i = [0:1:slots-1]) {
-		up(walls) right(sw_card_d + walls) back(i * slot_depth + (i * walls) + walls) rotate([0, 0, 90]) #switch_game_card_slot(t);
+		up(walls) right(sw_card_d + walls) back(i * slot_depth + (i * walls) + walls + extra_depth) rotate([0, 0, 90]) #switch_game_card_slot(t);
 	    }
 	}
     }
@@ -163,7 +172,7 @@ module _drawer(t, walls) {
 
 module drawer_puller(t, width, depth, height) {
     union() {
-	cube([width, depth / 4, height * 2]);
+	cube([width, depth / 2, height * 2]);
 	cube([width, depth, height]);
     }
 }
@@ -173,9 +182,13 @@ module drawer(t, walls) {
     puller_height = walls;
     puller_width = 4 * walls;
     puller_offset = ((drawer_long? sw_card_w:sw_card_d) + 2 * walls) / 2 - puller_width / 2;
+    /* twice puller_depth because of mirror */
+    depth_offset = drawer_depth(drawer_long, drawer_long? 3:4, drawer_long? sw_card_d:sw_card_w) + puller_depth*2;
+
     union() {
 	back(puller_depth) _drawer(t, walls);
 	right(puller_offset) drawer_puller(t, puller_width, puller_depth, puller_height);
+	right(puller_offset) back(depth_offset) mirror([0, 1, 0]) #drawer_puller(t, puller_width, puller_depth, puller_height);
     }
 }
 
