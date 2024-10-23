@@ -30,6 +30,8 @@ logo_line = ["Nintendo", "Switch", "Something"];
 font_size = 6;
 // Logo scaling
 logo_scaling = 1; // [1:"100%", 1.25:"125%", 1.5:"150%", 2:"200%"]
+// Logo font. Copy from Help/Font List
+logo_font = "DejaVu Sans";
 
 module __Customizer_Limit__() {}
 // Minimum angle
@@ -206,7 +208,7 @@ module logo_object(w, d, h) {
 	    }
 	    back(-10 - (logo_scaling * 20 * 0.5))
 	    for (i = [0:1:lines - 1]) {
-		back(-(i * 10)) linear_extrude(walls * 2) text(logo_line[i], size = font_size, halign = "center");
+		back(-(i * 10)) linear_extrude(walls * 2) text(logo_line[i], size = font_size, halign = "center", font=logo_font);
 	    }
 	}
     } else {
